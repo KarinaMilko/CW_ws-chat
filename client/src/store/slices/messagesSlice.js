@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import * as API from '../../api';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import * as API from "../../api";
 
-const MESSAGES_SLICE_NAME = 'messages';
+const MESSAGES_SLICE_NAME = "messages";
 
 export const getMessagesThunk = createAsyncThunk(
   `${MESSAGES_SLICE_NAME}/get`,
@@ -37,9 +37,26 @@ const initialState = {
 const messagesSlice = createSlice({
   name: MESSAGES_SLICE_NAME,
   initialState,
-  extraReducers: builder => {
+  reducers: {
+    newMessagePending(state) {
+      state.isFetching = true;
+      state.error = null;
+    },
+    newMessageSuccess(state, { payload }) {
+      state.isFetching = false;
+      if (state.messages.length >= state.limit) {
+        state.messages.splice(0, 1);
+      }
+      state.messages.push(payload);
+    },
+    newMessageError(state, { payload }) {
+      state.isFetching = false;
+      state.error = payload;
+    },
+  },
+  extraReducers: (builder) => {
     // GET
-    builder.addCase(getMessagesThunk.pending, state => {
+    builder.addCase(getMessagesThunk.pending, (state) => {
       state.isFetching = true;
       state.error = null;
     });
@@ -53,23 +70,27 @@ const messagesSlice = createSlice({
       state.error = payload;
     });
     // CREATE
-    builder.addCase(createMessageThunk.pending, state => {
-      state.isFetching = true;
-      state.error = null;
-    });
-    builder.addCase(createMessageThunk.fulfilled, (state, { payload }) => {
-      state.isFetching = false;
-      if (state.messages.length >= state.limit) {
-        state.messages.splice(0, 1);
-      }
-      state.messages.push(payload);
-    });
-    builder.addCase(createMessageThunk.rejected, (state, { payload }) => {
-      state.isFetching = false;
-      state.error = payload;
-    });
+    //     builder.addCase(createMessageThunk.pending, state => {
+    //       state.isFetching = true;
+    //       state.error = null;
+    //     });
+    //     builder.addCase(createMessageThunk.fulfilled, (state, { payload }) => {
+    //       state.isFetching = false;
+    //       if (state.messages.length >= state.limit) {
+    //         state.messages.splice(0, 1);
+    //       }
+    //       state.messages.push(payload);
+    //     });
+    //     builder.addCase(createMessageThunk.rejected, (state, { payload }) => {
+    //       state.isFetching = false;
+    //       state.error = payload;
+    //     });
   },
 });
 
 const { reducer } = messagesSlice;
+
+// export const { newMessagePending, newMessageSuccess, newMessageError } =
+//   actions;
+
 export default reducer;

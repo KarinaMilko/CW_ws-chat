@@ -12,7 +12,7 @@ const cors = { origin: "*" };
 const wsServer = new Server(httpServer, { cors });
 
 wsServer.on("connection", (socket) => {
-  // console.log('Connection established');
+  console.log("Connection established");
 
   socket.on("NEW_MESSAGE", async (payload) => {
     try {
@@ -47,8 +47,7 @@ httpServer.listen(PORT, () => {
 //   // сповістити всіх, що чат закінчує роботу
 //   wsServer.emit("CHAT_WILL_CLOSED");
 
-//   wsServer.on("SEND_TO_SERVER", (message) => {
+//   socket.on("SEND_TO_SERVER", (message) => {
 //     console.log("From client:", message);
 //   });
 // });
-// --------------
