@@ -42,6 +42,12 @@ const messagesSlice = createSlice({
       state.isFetching = false;
       state.error = payload;
     },
+    deleteMessageSuccess(state, { payload: id }) {
+      state.messages = state.messages.filter((m) => m._id !== id);
+    },
+    deleteMessageError(state, { payload }) {
+      state.error = payload;
+    },
   },
   extraReducers: (builder) => {
     // GET
@@ -58,12 +64,21 @@ const messagesSlice = createSlice({
       state.isFetching = false;
       state.error = payload;
     });
+    // builder.addCase(getMessagesThunk.fulfilled, (state, { payload }) => {
+    //   state.messages = payload.reverse();
+    //   state.isFetching = false;
+    // });
   },
 });
 
 const { reducer, actions } = messagesSlice;
 
-export const { newMessagePending, newMessageSuccess, newMessageError } =
-  actions;
+export const {
+  newMessagePending,
+  newMessageSuccess,
+  newMessageError,
+  deleteMessageSuccess,
+  deleteMessageError,
+} = actions;
 
 export default reducer;

@@ -1,10 +1,18 @@
 const { Server } = require("socket.io");
 const { Message } = require("./models");
 const {
-  SOCKET_SERVER_EVENTS: { NEW_MESSAGE, NEW_MESSAGE_SUCCESS, NEW_MESSAGE_ERROR },
+  SOCKET_SERVER_EVENTS: {
+    NEW_MESSAGE,
+    NEW_MESSAGE_SUCCESS,
+    NEW_MESSAGE_ERROR,
+    DELETE_MESSAGE,
+    DELETE_MESSAGE_SUCCESS,
+    DELETE_MESSAGE_ERROR,
+  },
 } = require("./constants");
 
 const cors = { origin: "*" };
+
 function initSocket(httpServer) {
   const wsServer = new Server(httpServer, { cors });
   wsServer.on("connection", (socket) => {
@@ -19,6 +27,15 @@ function initSocket(httpServer) {
       } catch (error) {
         // помилка - відправити помилку собі
         socket.emit(NEW_MESSAGE_ERROR, error);
+      }
+    });
+
+    socket.on(DELETE_MESSAGE, async (id) => {
+      try {
+        await Message.findByIdAndDelete(id);
+        wsServer.emit(DELETE_MESSAGE_SUCCESS, id);
+      } catch (error) {
+        socket.emit(DELETE_MESSAGE_ERROR, error);
       }
     });
   });

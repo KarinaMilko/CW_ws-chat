@@ -3,12 +3,21 @@ import { Formik, Form, Field } from "formik";
 import {
   getMessagesThunk,
   newMessagePending,
+  deleteMessageSuccess,
 } from "./store/slices/messagesSlice";
 import styles from "./App.module.css";
 import { connect } from "react-redux";
 import { ws } from "./api";
 
-function App({ messages, isFetching, error, limit, get, fetching }) {
+function App({
+  messages,
+  isFetching,
+  error,
+  limit,
+  get,
+  fetching,
+  onDeleteMessage,
+}) {
   const scrollTo = useRef(null);
 
   useEffect(() => {
@@ -19,6 +28,11 @@ function App({ messages, isFetching, error, limit, get, fetching }) {
     ws.createMessage(values);
     fetching();
     formikBag.resetForm();
+  };
+
+  const handleDelete = (id) => {
+    ws.deleteMessage(id);
+    onDeleteMessage(id);
   };
 
   useEffect(() => {
@@ -36,6 +50,7 @@ function App({ messages, isFetching, error, limit, get, fetching }) {
               <p>{m._id}</p>
               <p>{m.body}</p>
               <p>{m.createdAt}</p>
+              <button onClick={() => handleDelete(m._id)}>Delete</button>
             </li>
           ))}
         </ul>
@@ -49,6 +64,7 @@ function App({ messages, isFetching, error, limit, get, fetching }) {
           <Form>
             <Field name="body"></Field>
             <button type="submit">Send</button>
+            <button onClick={() => onDelete(m._id)}>Delete</button>
           </Form>
         </Formik>
       </section>
@@ -61,6 +77,7 @@ const mapStateToProps = ({ chat }) => chat;
 const mapDispatchToProps = (dispatch) => ({
   get: (limit) => dispatch(getMessagesThunk(limit)),
   fetching: () => dispatch(newMessagePending()),
+  onDeleteMessage: (id) => dispatch(deleteMessageSuccess(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
