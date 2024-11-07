@@ -1,5 +1,9 @@
 import axios from "axios";
 import { io } from "socket.io-client";
+import {
+  newMessageError,
+  newMessageSuccess,
+} from "../store/slices/messagesSlice";
 
 const axiosOptions = {
   baseURL: "http://127.0.0.1:5000/api",
@@ -20,13 +24,24 @@ const socketClient = io("ws://localhost:5000"); // 'connection'
 // export const createMessage = (newMessage) =>
 //   apiInstance.post("/messages", newMessage);
 
-socketClient.on("NEW_MESSAGE_SUCCESS", (payload) => {
-  console.log("payload :>> ", payload);
-});
+// socketClient.on("NEW_MESSAGE_SUCCESS", (payload) => {
+//   console.log("payload :>> ", payload);
+// });
 
-socketClient.on("NEW_MESSAGE_ERROR", (payload) => {
-  console.log("payload :>> ", payload);
-});
+// socketClient.on("NEW_MESSAGE_ERROR", (payload) => {
+//   console.log("payload :>> ", payload);
+// });
+
+export const initSocket = (store) => {
+  socketClient.on("NEW_MESSAGE_SUCCESS", (payload) => {
+    store.dispatch(newMessageSuccess(payload));
+  });
+
+  socketClient.on("NEW_MESSAGE_ERROR", (payload) => {
+    store.dispatch(newMessageError(payload));
+  });
+};
+
 // ============================================================
 
 // const socketClient = io("ws://localhost:5000"); // 'connection'

@@ -15,17 +15,17 @@ export const getMessagesThunk = createAsyncThunk(
   }
 );
 
-export const createMessageThunk = createAsyncThunk(
-  `${MESSAGES_SLICE_NAME}/create`,
-  async (payload, thunkAPI) => {
-    try {
-      const response = await API.createMessage(payload);
-      return response.data.data;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({ message: err.message });
-    }
-  }
-);
+// export const createMessageThunk = createAsyncThunk(
+//   `${MESSAGES_SLICE_NAME}/create`,
+//   async (payload, thunkAPI) => {
+//     try {
+//       const response = await API.createMessage(payload);
+//       return response.data.data;
+//     } catch (err) {
+//       return thunkAPI.rejectWithValue({ message: err.message });
+//     }
+//   }
+// );
 
 const initialState = {
   messages: [],
@@ -48,6 +48,7 @@ const messagesSlice = createSlice({
         state.messages.splice(0, 1);
       }
       state.messages.push(payload);
+      // state.error = null;
     },
     newMessageError(state, { payload }) {
       state.isFetching = false;
@@ -88,9 +89,9 @@ const messagesSlice = createSlice({
   },
 });
 
-const { reducer } = messagesSlice;
+const { reducer, actions } = messagesSlice;
 
-// export const { newMessagePending, newMessageSuccess, newMessageError } =
-//   actions;
+export const { newMessagePending, newMessageSuccess, newMessageError } =
+  actions;
 
 export default reducer;

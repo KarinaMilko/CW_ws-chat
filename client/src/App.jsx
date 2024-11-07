@@ -3,12 +3,13 @@ import { Formik, Form, Field } from "formik";
 import {
   // createMessageThunk,
   getMessagesThunk,
+  newMessagePending,
 } from "./store/slices/messagesSlice";
 import styles from "./App.module.css";
 import { connect } from "react-redux";
 import { createMessage } from "./api";
 
-function App({ messages, isFetching, error, limit, get }) {
+function App({ messages, isFetching, error, limit, get, fetching }) {
   useEffect(() => {
     get(limit);
   }, [limit]);
@@ -16,6 +17,7 @@ function App({ messages, isFetching, error, limit, get }) {
   const addMessage = (values, formikBag) => {
     // create(values);
     createMessage(values);
+    fetching();
     formikBag.resetForm();
   };
 
@@ -54,6 +56,7 @@ const mapStateToProps = ({ chat }) => chat;
 const mapDispatchToProps = (dispatch) => ({
   get: (limit) => dispatch(getMessagesThunk(limit)),
   // create: (values) => dispatch(createMessageThunk(values)),
+  fetching: () => dispatch(newMessagePending()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
