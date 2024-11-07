@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import * as API from "../../api";
+import { http } from "../../api";
 
 const MESSAGES_SLICE_NAME = "messages";
 
@@ -7,25 +7,13 @@ export const getMessagesThunk = createAsyncThunk(
   `${MESSAGES_SLICE_NAME}/get`,
   async (payload, thunkAPI) => {
     try {
-      const response = await API.getMessages(payload);
+      const response = await http.getMessages(payload);
       return response.data.data;
     } catch (err) {
       return thunkAPI.rejectWithValue({ message: err.message });
     }
   }
 );
-
-// export const createMessageThunk = createAsyncThunk(
-//   `${MESSAGES_SLICE_NAME}/create`,
-//   async (payload, thunkAPI) => {
-//     try {
-//       const response = await API.createMessage(payload);
-//       return response.data.data;
-//     } catch (err) {
-//       return thunkAPI.rejectWithValue({ message: err.message });
-//     }
-//   }
-// );
 
 const initialState = {
   messages: [],
@@ -70,22 +58,6 @@ const messagesSlice = createSlice({
       state.isFetching = false;
       state.error = payload;
     });
-    // CREATE
-    //     builder.addCase(createMessageThunk.pending, state => {
-    //       state.isFetching = true;
-    //       state.error = null;
-    //     });
-    //     builder.addCase(createMessageThunk.fulfilled, (state, { payload }) => {
-    //       state.isFetching = false;
-    //       if (state.messages.length >= state.limit) {
-    //         state.messages.splice(0, 1);
-    //       }
-    //       state.messages.push(payload);
-    //     });
-    //     builder.addCase(createMessageThunk.rejected, (state, { payload }) => {
-    //       state.isFetching = false;
-    //       state.error = payload;
-    //     });
   },
 });
 
