@@ -9,15 +9,7 @@ import styles from "./App.module.css";
 import { connect } from "react-redux";
 import { ws } from "./api";
 
-function App({
-  messages,
-  isFetching,
-  error,
-  limit,
-  get,
-  fetching,
-  onDeleteMessage,
-}) {
+function App({ messages, isFetching, error, limit, get, fetching }) {
   const scrollTo = useRef(null);
 
   useEffect(() => {
@@ -32,7 +24,6 @@ function App({
 
   const handleDelete = (id) => {
     ws.deleteMessage(id);
-    onDeleteMessage(id);
   };
 
   useEffect(() => {
@@ -64,7 +55,6 @@ function App({
           <Form>
             <Field name="body"></Field>
             <button type="submit">Send</button>
-            <button onClick={() => onDelete(m._id)}>Delete</button>
           </Form>
         </Formik>
       </section>

@@ -15,6 +15,7 @@ const cors = { origin: "*" };
 
 function initSocket(httpServer) {
   const wsServer = new Server(httpServer, { cors });
+
   wsServer.on("connection", (socket) => {
     console.log("Connection established");
 
@@ -30,14 +31,15 @@ function initSocket(httpServer) {
       }
     });
 
-    socket.on(DELETE_MESSAGE, async (id) => {
+    socket.on(DELETE_MESSAGE, async (payload) => {
       try {
-        await Message.findByIdAndDelete(id);
-        wsServer.emit(DELETE_MESSAGE_SUCCESS, id);
+        await Message.findByIdAndDelete(payload);
+        wsServer.emit(DELETE_MESSAGE_SUCCESS, payload);
       } catch (error) {
         socket.emit(DELETE_MESSAGE_ERROR, error);
       }
     });
   });
 }
+
 module.exports = initSocket;

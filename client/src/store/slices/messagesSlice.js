@@ -64,10 +64,6 @@ const messagesSlice = createSlice({
       state.isFetching = false;
       state.error = payload;
     });
-    // builder.addCase(getMessagesThunk.fulfilled, (state, { payload }) => {
-    //   state.messages = payload.reverse();
-    //   state.isFetching = false;
-    // });
   },
 });
 

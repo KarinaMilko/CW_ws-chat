@@ -5,8 +5,8 @@ import {
   deleteMessageSuccess,
   deleteMessageError,
 } from "../store/slices/messagesSlice";
+import CONSTANTS from "./../constants";
 
-import CONSTANTS from "../constants";
 const {
   SOCKET_EVENTS: {
     NEW_MESSAGE,
@@ -19,9 +19,13 @@ const {
 } = CONSTANTS;
 
 const socketClient = io("ws://localhost:5000");
-// socketClient.emit('connection', socketClient)
+
 export const createMessage = (newMessage) => {
   socketClient.emit(NEW_MESSAGE, newMessage);
+};
+
+export const deleteMessage = (handleDelete) => {
+  socketClient.emit(DELETE_MESSAGE, handleDelete);
 };
 export const initSocket = (store) => {
   socketClient.on(NEW_MESSAGE_SUCCESS, (payload) => {
@@ -30,15 +34,8 @@ export const initSocket = (store) => {
   socketClient.on(NEW_MESSAGE_ERROR, (payload) => {
     store.dispatch(newMessageError(payload));
   });
-};
-
-export const deleteMessage = (id) => {
-  socketClient.emit(DELETE_MESSAGE, id);
-};
-
-export const initSocketDelete = (store) => {
-  socketClient.on(DELETE_MESSAGE_SUCCESS, (id) => {
-    store.dispatch(deleteMessageSuccess(id));
+  socketClient.on(DELETE_MESSAGE_SUCCESS, (payload) => {
+    store.dispatch(deleteMessageSuccess(payload));
   });
   socketClient.on(DELETE_MESSAGE_ERROR, (error) => {
     store.dispatch(deleteMessageError(error));
